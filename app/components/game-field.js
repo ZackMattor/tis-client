@@ -2,7 +2,7 @@ import Ember from 'ember';
 import degToRad from '../utils/deg-to-rad';
 
 export default Ember.Component.extend({
-  game_state: Ember.inject.service(),
+  game_engine: Ember.inject.service(),
 
   tagName: 'canvas',
 
@@ -15,11 +15,13 @@ export default Ember.Component.extend({
 
     this.set('ctx', ctx);
 
-    this.get('game_state').on('state_updated', this.renderField.bind(this))
+    // Wire up events
+    this.get('game_engine').on('state_changed', this.renderField.bind(this))
   },
 
+  // DRAW STUFF
   renderField() {
-    let state = this.get('game_state.currentState');
+    let state = this.get('game_engine.currentState');
     this.get('ctx').clearRect(0, 0, 1000, 1000);
 
     state.ships.forEach(this.drawShip.bind(this));
@@ -34,7 +36,6 @@ export default Ember.Component.extend({
   drawProjectile(projectile) {
     let ctx = this.get('ctx');
     ctx.beginPath();
-    console.log(projectile.x);
     ctx.arc(projectile.x, projectile.y, 3,0,2*Math.PI);
     ctx.stroke();
   },
