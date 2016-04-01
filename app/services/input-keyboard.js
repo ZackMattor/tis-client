@@ -11,16 +11,16 @@ export default Ember.Service.extend(Ember.Evented, {
       this.set('keyState.' + KEY[key_name], false);
     }
 
-    $(document).on('keydown', this.onKeyDown.bind(this));
-    $(document).on('keyup', this.onKeyUp.bind(this));
+    Ember.$(document).on('keydown', this.onKeyDown.bind(this));
+    Ember.$(document).on('keyup', this.onKeyUp.bind(this));
   },
 
   onKeyDown(evt) {
-    this.setKey(evt.keyCode, true)
+    this.setKey(evt.keyCode, true);
   },
 
   onKeyUp(evt) {
-    this.setKey(evt.keyCode, false)
+    this.setKey(evt.keyCode, false);
   },
 
   setKey(key_code, value) {
