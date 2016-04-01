@@ -46,7 +46,7 @@ export default Ember.Component.extend({
     ctx.save();
 
     ctx.translate(x, y);
-    ctx.rotate(rotation);
+    ctx.rotate(rotation + -Math.PI/2);
     ctx.beginPath();
     ctx.moveTo(length * 2 * -1, 0);
     ctx.lineTo(length, length);

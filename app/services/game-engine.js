@@ -16,7 +16,6 @@ export default Ember.Service.extend(Ember.Evented, {
   },
 
   sendKeyboardState() {
-    console.log('SENDING');
     this.get('connection').send(JSON.stringify(this.get('input_keyboard.keyState')));
   },
 
