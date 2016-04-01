@@ -1,35 +1,58 @@
 import Ember from 'ember';
-import degToRad from '../utils/deg-to-rad';
 
 export default Ember.Component.extend({
   game_engine: Ember.inject.service(),
+  canvas_width: Ember.$(window).width(),
+  canvas_height: Ember.$(window).height(),
 
   tagName: 'canvas',
 
   didInsertElement() {
-    this.$().attr('width', Ember.$(window).width());
-    this.$().attr('height', Ember.$(window).height());
-
-    var c = this.$()[0];
-    var ctx=c.getContext("2d");
-
-    this.set('ctx', ctx);
+    this.setupCanvas();
+    this.setupCtx();
 
     // Wire up events
-    this.get('game_engine').on('state_changed', this.renderField.bind(this))
+    this.get('game_engine').on('state_changed', this.renderField.bind(this));
+
+    this.$(window).on('resize', this.handleResize.bind(this));
+  },
+
+  setupCanvas() {
+    let { canvas_width,
+          canvas_height } = this.getProperties('canvas_width', 'canvas_height');
+
+    this.$().attr('width', canvas_width);
+    this.$().attr('height', canvas_height);
+  },
+
+  setupCtx() {
+    let c = this.$()[0];
+    let ctx = c.getContext("2d");
+
+    this.set('ctx', ctx);
   },
 
   // DRAW STUFF
   renderField() {
     let state = this.get('game_engine.currentState');
-    this.get('ctx').clearRect(0, 0, 1000, 1000);
+
+    let { ctx,
+          canvas_width,
+          canvas_height } = this.getProperties('ctx', 'canvas_width', 'canvas_height');
+
+    ctx.clearRect(0, 0, canvas_width, canvas_height);
 
     state.ships.forEach(this.drawShip.bind(this));
     state.projectiles.forEach(this.drawProjectile.bind(this));
   },
 
+  handleResize() {
+    this.set('canvas_width', this.$(window).width());
+    this.set('canvas_height', this.$(window).height());
+    this.setupCanvas();
+  },
+
   drawShip(ship) {
-    let ctx = this.get('ctx');
     this.drawTriangle(ship.x, ship.y, 25, ship.rotation, '#cccccc');
   },
 
