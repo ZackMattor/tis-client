@@ -12,9 +12,12 @@ export default Ember.Component.extend({
     this.setupCtx();
 
     // Wire up events
-    this.get('game_engine').on('state_changed', this.renderField.bind(this));
+    let game_engine = this.get('game_engine');
+    game_engine.joinGame();
+    game_engine.on('state_changed', this.renderField.bind(this));
+    game_engine.on('disconnected', () => this.sendAction('disconnected'));
 
-    this.$(window).on('resize', this.handleResize.bind(this));
+    Ember.$(window).on('resize', this.handleResize.bind(this));
   },
 
   setupCanvas() {
@@ -47,8 +50,8 @@ export default Ember.Component.extend({
   },
 
   handleResize() {
-    this.set('canvas_width', this.$(window).width());
-    this.set('canvas_height', this.$(window).height());
+    this.set('canvas_width',  Ember.$(window).width());
+    this.set('canvas_height', Ember.$(window).height());
     this.setupCanvas();
   },
 

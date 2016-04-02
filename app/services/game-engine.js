@@ -5,14 +5,21 @@ export default Ember.Service.extend(Ember.Evented, {
 
   currentState: null,
 
-  init() {
-    this.set('connection', new WebSocket('ws://localhost:8080'));
+  joinGame() {
+    let connection = new WebSocket('ws://localhost:8080');
+    this.set('connection', connection);
 
-    this.get('connection').onmessage = this.onMessage.bind(this);
-    this.get('connection').onerror = function() {
-      console.log('ERROR!');
-    };
+    // Wire up connection events
+    connection.onmessage = this.onMessage.bind(this);
+    connection.onerror = this.leaveGame.bind(this);
+
+    // Wire up keyborad events
     this.get('input_keyboard').on('changed', this.sendKeyboardState.bind(this));
+  },
+
+  leaveGame() {
+    this.get('connection').close();
+    this.trigger('disconnected');
   },
 
   sendKeyboardState() {
