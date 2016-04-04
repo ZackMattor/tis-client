@@ -6,7 +6,7 @@ export default Ember.Service.extend(Ember.Evented, {
   currentState: null,
 
   joinGame() {
-    let connection = new WebSocket('ws://localhost:8080');
+    let connection = new WebSocket('wss://zack-game-server.ngrok.io/');
     this.set('connection', connection);
 
     // Wire up connection events

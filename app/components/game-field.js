@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import Camera from '../utils/camera';
 
 export default Ember.Component.extend({
   game_engine: Ember.inject.service(),
@@ -32,21 +33,31 @@ export default Ember.Component.extend({
     let c = this.$()[0];
     let ctx = c.getContext("2d");
 
+    this.set('camera', new Camera(ctx));
+    window.camera = this.get('camera');
+
     this.set('ctx', ctx);
   },
 
   // DRAW STUFF
   renderField() {
-    let state = this.get('game_engine.currentState');
+    let frame_data = this.get('game_engine.currentState');
+
+    this.set('client_id', frame_data.id);
 
     let { ctx,
           canvas_width,
-          canvas_height } = this.getProperties('ctx', 'canvas_width', 'canvas_height');
+          canvas_height,
+          camera  } = this.getProperties('ctx', 'canvas_width', 'canvas_height', 'camera');
 
-    ctx.clearRect(0, 0, canvas_width, canvas_height);
+    camera.begin();
+    ctx.clearRect(camera.viewport.left, camera.viewport.top, camera.viewport.width, camera.viewport.height);
 
-    state.ships.forEach(this.drawShip.bind(this));
-    state.projectiles.forEach(this.drawProjectile.bind(this));
+    let game_objects = frame_data.state;
+
+    game_objects.ships.forEach(this.drawShip.bind(this));
+    game_objects.projectiles.forEach(this.drawProjectile.bind(this));
+    camera.end();
   },
 
   handleResize() {
@@ -57,12 +68,18 @@ export default Ember.Component.extend({
 
   drawShip(ship) {
     this.drawTriangle(ship.x, ship.y, 25, ship.rotation, '#cccccc');
+
+    let should_follow = this.get('client_id') === ship.id;
+
+    if(should_follow) {
+      this.get('camera').moveTo(ship.x, ship.y);
+    }
   },
 
   drawProjectile(projectile) {
     let ctx = this.get('ctx');
     ctx.beginPath();
-    ctx.arc(projectile.x, projectile.y, 3,0,2*Math.PI);
+    ctx.arc(projectile.x, projectile.y, 3 ,0 , 2*Math.PI);
     ctx.stroke();
   },
 

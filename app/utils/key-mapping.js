@@ -3,6 +3,7 @@ export default {
   A: 65,
   S: 83,
   D: 68,
+  R: 82,
 
   LEFT_ARROW: 37,
   UP_ARROW: 38,
@@ -10,5 +11,6 @@ export default {
   DOWN_ARROW: 40,
 
   SPACE: 32
-
 };
+
+// https://css-tricks.com/snippets/javascript/javascript-keycodes/
