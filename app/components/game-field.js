@@ -46,14 +46,14 @@ export default Ember.Component.extend({
     this.set('client_id', frame_data.id);
 
     let { ctx,
-          canvas_width,
-          canvas_height,
-          camera  } = this.getProperties('ctx', 'canvas_width', 'canvas_height', 'camera');
+          camera  } = this.getProperties('ctx', 'camera');
+
+    let game_objects = frame_data.state;
+
+    this.centerCamera(game_objects.ships);
 
     camera.begin();
     ctx.clearRect(camera.viewport.left, camera.viewport.top, camera.viewport.width, camera.viewport.height);
-
-    let game_objects = frame_data.state;
 
     game_objects.ships.forEach(this.drawShip.bind(this));
     game_objects.projectiles.forEach(this.drawProjectile.bind(this));
@@ -66,14 +66,19 @@ export default Ember.Component.extend({
     this.setupCanvas();
   },
 
+  centerCamera(ships) {
+    let you = ships.find((ship)=> {
+      return this.get('client_id') === ship.id;
+    });
+
+    this.get('camera').moveTo(you.x, you.y);
+  },
+
   drawShip(ship) {
-    this.drawTriangle(ship.x, ship.y, 25, ship.rotation, '#cccccc');
+    let is_you = this.get('client_id') === ship.id;
+    let color = is_you ? '#E7711B' : '#cccccc';
 
-    let should_follow = this.get('client_id') === ship.id;
-
-    if(should_follow) {
-      this.get('camera').moveTo(ship.x, ship.y);
-    }
+    this.drawTriangle(ship.x, ship.y, 25, ship.rotation, color);
   },
 
   drawProjectile(projectile) {
