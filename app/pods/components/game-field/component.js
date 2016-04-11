@@ -17,13 +17,22 @@ export default Ember.Component.extend({
     let game_engine = this.get('game_engine');
 
     game_engine.on('state_changed', this.renderField.bind(this));
-    game_engine.on('disconnected', () => this.sendAction('disconnected'));
+    game_engine.on('disconnected', () => {
+      this.sendAction('disconnected')
+      game_engine.off('disconnected');
+      game_engine.off('state_changed');
+    });
 
     starFieldGenerator().then((image) => {
       this.set('star_field', image);
 
       game_engine.joinGame();
     });
+  },
+
+  willDestroyElement() {
+    Ember.$(window).off('resize');
+    this.get('game_engine').leaveGame();
   },
 
   setupCanvas() {
@@ -148,10 +157,8 @@ export default Ember.Component.extend({
     ctx.fill();
 
     ctx.closePath();
+
     ctx.restore();
-    ctx.beginPath();
-    ctx.arc(x, y, 3,0,2*Math.PI);
-    ctx.stroke();
   }
 
 });
