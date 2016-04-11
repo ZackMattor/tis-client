@@ -1,5 +1,6 @@
 import Ember from 'ember';
-import Camera from '../utils/camera';
+import Camera from 'client/utils/canvas/camera';
+import starFieldGenerator from 'client/utils/canvas/star-field';
 
 export default Ember.Component.extend({
   game_engine: Ember.inject.service(),
@@ -14,11 +15,15 @@ export default Ember.Component.extend({
 
     // Wire up events
     let game_engine = this.get('game_engine');
-    game_engine.joinGame();
+
     game_engine.on('state_changed', this.renderField.bind(this));
     game_engine.on('disconnected', () => this.sendAction('disconnected'));
 
-    Ember.$(window).on('resize', this.handleResize.bind(this));
+    starFieldGenerator().then((image) => {
+      this.set('star_field', image);
+
+      game_engine.joinGame();
+    });
   },
 
   setupCanvas() {
@@ -27,6 +32,9 @@ export default Ember.Component.extend({
 
     this.$().attr('width', canvas_width);
     this.$().attr('height', canvas_height);
+
+    // TODO: unbind this
+    Ember.$(window).on('resize', this.handleResize.bind(this));
   },
 
   setupCtx() {
@@ -52,9 +60,12 @@ export default Ember.Component.extend({
 
     this.centerCamera(game_objects.ships);
 
+    camera.zoomTo(2000);
     camera.begin();
     ctx.clearRect(camera.viewport.left, camera.viewport.top, camera.viewport.width, camera.viewport.height);
 
+    this.drawBackground();
+    this.drawBoundries();
     game_objects.ships.forEach(this.drawShip.bind(this));
     game_objects.projectiles.forEach(this.drawProjectile.bind(this));
     camera.end();
@@ -72,6 +83,40 @@ export default Ember.Component.extend({
     });
 
     this.get('camera').moveTo(you.x, you.y);
+  },
+
+  drawBackground() {
+    let { star_field,
+          ctx,
+          camera } = this.getProperties('star_field', 'ctx', 'camera');
+
+    let width  = star_field.width;
+    let height = star_field.height;
+    let [x, y] = camera.lookat;
+
+    var origin = {
+      x: Math.floor(x / width),
+      y: Math.floor(y / height)
+    };
+
+    let drawInGrid = function(x, y) {
+      ctx.drawImage(star_field, x * width, y * height);
+    };
+
+    for(var i = -1; i<2; i++) {
+      for(var j = -1; j<2; j++) {
+        drawInGrid(origin.x + i, origin.y + j);
+      }
+    }
+  },
+
+  drawBoundries() {
+    let ctx = this.get('ctx');
+
+    ctx.strokeStyle = "#FF0000";
+    ctx.lineWidth = 10;
+    ctx.strokeRect(-1000, -1000, 2000, 2000);
+    ctx.stroke();
   },
 
   drawShip(ship) {
