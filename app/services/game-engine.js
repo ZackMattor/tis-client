@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import ENV from 'client/config/environment';
 
 export default Ember.Service.extend(Ember.Evented, {
   input_keyboard: Ember.inject.service(),
@@ -6,7 +7,7 @@ export default Ember.Service.extend(Ember.Evented, {
   currentState: null,
 
   joinGame() {
-    let connection = new WebSocket('ws://localhost:8080/');
+    let connection = new WebSocket(ENV.APP.gameServerURL);
     this.set('connection', connection);
 
     // Wire up connection events
