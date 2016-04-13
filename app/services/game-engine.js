@@ -8,6 +8,7 @@ export default Ember.Service.extend(Ember.Evented, {
 
   joinGame() {
     let connection = new WebSocket(ENV.APP.gameServerURL);
+
     this.set('connection', connection);
 
     // Wire up connection events

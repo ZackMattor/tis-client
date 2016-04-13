@@ -51,6 +51,8 @@ export default Ember.Component.extend({
     let ctx = c.getContext("2d");
 
     this.set('camera', new Camera(ctx));
+    this.get('camera').zoomTo(2000);
+
     window.camera = this.get('camera');
 
     this.set('ctx', ctx);
@@ -69,14 +71,18 @@ export default Ember.Component.extend({
 
     this.centerCamera(game_objects.ships);
 
-    camera.zoomTo(2000);
     camera.begin();
+
     ctx.clearRect(camera.viewport.left, camera.viewport.top, camera.viewport.width, camera.viewport.height);
 
+    // Field stuff
     this.drawBackground();
     this.drawBoundries();
-    game_objects.ships.forEach(this.drawShip.bind(this));
+
+    // Game entities
     game_objects.projectiles.forEach(this.drawProjectile.bind(this));
+    game_objects.ships.forEach(this.drawShip.bind(this));
+
     camera.end();
   },
 
@@ -99,17 +105,26 @@ export default Ember.Component.extend({
           ctx,
           camera } = this.getProperties('star_field', 'ctx', 'camera');
 
-    let width  = star_field.width;
-    let height = star_field.height;
-    let [x, y] = camera.lookat;
+    let background_width  = star_field.width;
+    let background_height = star_field.height;
+
+    let viewport_width  = camera.viewport.width;
+    let viewport_height = camera.viewport.height;
+
+    let [camera_x, camera_y] = camera.lookat;
+
+    let number_tiles_tall = (viewport_height / background_height);
+    let number_tiles_wide = (viewport_width / background_width);
+
+    console.log('We need ' + number_tiles_wide + ','  + number_tiles_tall);
 
     var origin = {
-      x: Math.floor(x / width),
-      y: Math.floor(y / height)
+      x: Math.floor(camera_x / background_width),
+      y: Math.floor(camera_y / background_height)
     };
 
     let drawInGrid = function(x, y) {
-      ctx.drawImage(star_field, x * width, y * height);
+      ctx.drawImage(star_field, x * background_width, y * background_height);
     };
 
     for(var i = -1; i<2; i++) {
@@ -122,6 +137,7 @@ export default Ember.Component.extend({
   drawBoundries() {
     let ctx = this.get('ctx');
 
+    ctx.beginPath();
     ctx.strokeStyle = "#FF0000";
     ctx.lineWidth = 10;
     ctx.strokeRect(-1000, -1000, 2000, 2000);
