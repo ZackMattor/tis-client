@@ -118,23 +118,29 @@ export default Ember.Component.extend({
 
     let [camera_x, camera_y] = camera.lookat;
 
-    let number_tiles_tall = (viewport_height / background_height);
-    let number_tiles_wide = (viewport_width / background_width);
+    let number_tiles_tall = Math.ceil(viewport_height / background_height) + 1;
+    let number_tiles_wide = Math.ceil(viewport_width / background_width) + 1;
 
-    console.log('We need ' + number_tiles_wide + ','  + number_tiles_tall);
+    if(number_tiles_tall === 2) number_tiles_tall++;
+    if(number_tiles_wide === 2) number_tiles_wide++;
 
-    var origin = {
+    var tile_coords = {
       x: Math.floor(camera_x / background_width),
       y: Math.floor(camera_y / background_height)
     };
 
     let drawInGrid = function(x, y) {
       ctx.drawImage(star_field, x * background_width, y * background_height);
+
+      ctx.strokeStyle = "#333333";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x * background_width, y * background_height, background_width, background_height);
+      ctx.stroke();
     };
 
-    for(var i = -1; i<2; i++) {
-      for(var j = -1; j<2; j++) {
-        drawInGrid(origin.x + i, origin.y + j);
+    for(var i = -Math.floor(number_tiles_wide / 2); i < Math.ceil(number_tiles_wide / 2); i++) {
+      for(var j = -Math.floor(number_tiles_tall / 2); j < Math.ceil(number_tiles_tall / 2); j++) {
+        drawInGrid(tile_coords.x + i, tile_coords.y + j);
       }
     }
   },
