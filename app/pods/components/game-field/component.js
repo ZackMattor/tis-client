@@ -18,7 +18,7 @@ export default Ember.Component.extend({
 
     game_engine.on('state_changed', this.renderField.bind(this));
     game_engine.on('disconnected', () => {
-      this.sendAction('disconnected')
+      this.sendAction('disconnected');
       game_engine.off('disconnected');
       game_engine.off('state_changed');
     });
