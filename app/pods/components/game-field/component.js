@@ -160,6 +160,33 @@ export default Ember.Component.extend({
     let color = is_you ? '#E7711B' : '#cccccc';
 
     this.drawTriangle(ship.x, ship.y, 25, ship.rotation, color);
+    this.drawHealth(ship.health, ship.x, ship.y);
+    this.drawName(ship.id, ship.x, ship.y);
+  },
+
+  drawName(name, origin_x, origin_y) {
+    let ctx = this.get('ctx');
+    name = "'" + name + "'";
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "18px sans serif";
+
+    var text = ctx.measureText(name);
+
+    ctx.fillText(name, origin_x - (text.width / 2), origin_y - 70);
+  },
+
+  drawHealth(health, origin_x, origin_y) {
+    let ctx = this.get('ctx');
+    health = "Health: " + health;
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "18px sans serif";
+
+    var text = ctx.measureText(health);
+
+
+    ctx.fillText(health, origin_x - (text.width / 2), origin_y - 50);
   },
 
   drawProjectile(projectile) {
