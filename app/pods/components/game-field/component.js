@@ -42,8 +42,13 @@ export default Ember.Component.extend({
     this.$().attr('width', canvas_width);
     this.$().attr('height', canvas_height);
 
-    // TODO: unbind this
-    Ember.$(window).on('resize', this.handleResize.bind(this));
+    var resizeTimer;
+
+    // debounced resize
+    Ember.$(window).on('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(this.handleResize.bind(this), 250);
+    });
   },
 
   setupCtx() {
