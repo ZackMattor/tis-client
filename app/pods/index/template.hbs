@@ -1,1 +1,5 @@
 {{#link-to 'game'}}Join A Game{{/link-to}}
+
+{{#each model as |server|}}
+  {{server.name}}<br>
+{{/each}}
