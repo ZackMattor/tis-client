@@ -1,11 +1,15 @@
 import Ember from 'ember';
 import Camera from 'client/utils/canvas/camera';
 import starFieldGenerator from 'client/utils/canvas/star-field';
+import miniMap from 'client/utils/canvas/mini-map';
+
 
 export default Ember.Component.extend({
   game_engine: Ember.inject.service(),
   canvas_width: Ember.$(window).width(),
   canvas_height: Ember.$(window).height(),
+
+  mapSize: [4000, 4000],
 
   tagName: 'canvas',
 
@@ -89,6 +93,7 @@ export default Ember.Component.extend({
     game_objects.ships.forEach(this.drawShip.bind(this));
 
     camera.end();
+    miniMap(ctx, game_objects);
   },
 
   handleResize() {
@@ -147,11 +152,12 @@ export default Ember.Component.extend({
 
   drawBoundries() {
     let ctx = this.get('ctx');
+    let map_size = this.get('mapSize');
 
     ctx.beginPath();
     ctx.strokeStyle = "#FF0000";
     ctx.lineWidth = 10;
-    ctx.strokeRect(-1000, -1000, 2000, 2000);
+    ctx.strokeRect(0, 0, map_size[0], map_size[1]);
     ctx.stroke();
   },
 
