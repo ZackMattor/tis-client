@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Camera from 'client/utils/canvas/camera';
 import starFieldGenerator from 'client/utils/canvas/star-field';
-import miniMap from 'client/utils/canvas/mini-map';
+import MiniMap from 'client/utils/canvas/mini-map';
 
 
 export default Ember.Component.extend({
@@ -26,6 +26,13 @@ export default Ember.Component.extend({
       game_engine.off('disconnected');
       game_engine.off('state_changed');
     });
+
+    this.miniMap = new MiniMap(this.get('ctx'),
+                               this.get('mapSize')[0],
+                               this.get('mapSize')[1],
+                               50,
+                               50,
+                               0.05);
 
     starFieldGenerator().then((image) => {
       this.set('star_field', image);
@@ -93,7 +100,8 @@ export default Ember.Component.extend({
     game_objects.ships.forEach(this.drawShip.bind(this));
 
     camera.end();
-    miniMap(ctx, game_objects);
+
+    this.miniMap.render(game_objects, this.get('client_id'));
   },
 
   handleResize() {
