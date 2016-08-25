@@ -17,7 +17,8 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-      gameServerURL: process.env.GAME_SERVER_URL || 'ws://localhost:8080'
+      gameServerSocketURL: process.env.GAME_SERVER_SOCKET_URL || 'ws://localhost:8080',
+      gameServerApiURL: process.env.GAME_SERVER_URL || 'http://localhost:8080'
     }
   };
 

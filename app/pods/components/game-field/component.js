@@ -16,6 +16,7 @@ export default Ember.Component.extend({
   didInsertElement() {
     this.setupCanvas();
     this.setupCtx();
+    this.set('client_id', this.get('game_engine.session_id'));
 
     // Wire up events
     let game_engine = this.get('game_engine');
@@ -77,8 +78,6 @@ export default Ember.Component.extend({
   // DRAW STUFF
   renderField() {
     let frame_data = this.get('game_engine.currentState');
-
-    this.set('client_id', frame_data.id);
 
     let { ctx,
           camera  } = this.getProperties('ctx', 'camera');
@@ -175,7 +174,7 @@ export default Ember.Component.extend({
 
     this.drawTriangle(ship.x, ship.y, 25, ship.rotation, color);
     this.drawHealth(ship.health, ship.x, ship.y);
-    this.drawName(ship.id, ship.x, ship.y);
+    this.drawName(ship.name, ship.x, ship.y);
   },
 
   drawName(name, origin_x, origin_y) {

@@ -1,5 +1,2 @@
-{{#link-to 'game'}}Join A Game{{/link-to}}
-
-{{#each model as |server|}}
-  {{server.name}}<br>
-{{/each}}
+{{input value=username}}
+<div {{action 'join'}}>Join A Game</div>

@@ -6,17 +6,41 @@ export default Ember.Service.extend(Ember.Evented, {
 
   currentState: null,
 
-  joinGame() {
-    let connection = new WebSocket(ENV.APP.gameServerURL);
+  session_id: null,
 
+  auth(name, cb) {
+    let data = {
+      nickname: name
+    };
+
+    let url = ENV.APP.gameServerApiURL + '/session/new';
+
+    $.get(url, data, (data) => {
+      this.session_id = data.session_id;
+      cb();
+    });
+  },
+
+  joinGame() {
+    let connection = new WebSocket(ENV.APP.gameServerSocketURL);
     this.set('connection', connection);
 
-    // Wire up connection events
-    connection.onmessage = this.onMessage.bind(this);
-    connection.onerror = this.leaveGame.bind(this);
+    connection.onopen = () => {
+      // Wire up connection events
+      connection.onmessage = this.onMessage.bind(this);
+      connection.onerror = this.leaveGame.bind(this);
 
-    // Wire up keyborad events
-    this.get('input_keyboard').on('changed', this.sendKeyboardState.bind(this));
+      let data = {
+        'type': 'auth',
+        'session_id': this.get('session_id')
+      }
+
+      this.get('connection').send(JSON.stringify(data));
+
+      // Wire up keyborad events
+      this.get('input_keyboard').on('changed', this.sendKeyboardState.bind(this));
+    };
+
   },
 
   leaveGame() {
@@ -25,7 +49,15 @@ export default Ember.Service.extend(Ember.Evented, {
   },
 
   sendKeyboardState() {
-    this.get('connection').send(JSON.stringify(this.get('input_keyboard.keyState')));
+    var keyboard_data = this.get('input_keyboard.keyState')
+
+    var data = {
+      type: 'player-update',
+      session_id: this.get('session_id'),
+      data: keyboard_data
+    };
+
+    this.get('connection').send(JSON.stringify(data));
   },
 
   onMessage(e) {
