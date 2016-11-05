@@ -55,6 +55,7 @@ export default Ember.Component.extend({
     this.scene.add(axes);
 
     this.ships = {};
+    this.projectiles = {};
 
     this.light = this.createLight();
     this.scene.add(this.light);
@@ -91,7 +92,13 @@ export default Ember.Component.extend({
       this.ships[ship.id].mesh.rotation.z = ship.rotation + Math.PI/2;
     });
 
-    // SPAWN PROJECTILE OBJECTS
+    game_objects.projectiles.forEach((projectile) => {
+      console.log(projectile.id);
+      if(!(projectile.id in this.projectiles)) this.addProjectileObj(projectile);
+
+      this.projectiles[projectile.id].mesh.position.x = projectile.x;
+      this.projectiles[projectile.id].mesh.position.y = projectile.y;
+    });
   },
 
   addShipObj(ship) {
@@ -108,6 +115,21 @@ export default Ember.Component.extend({
     };
 
     mesh.add(this.camera);
+    this.scene.add(mesh);
+  },
+
+  addProjectileObj(projectile) {
+    var geometry = new THREE.BoxGeometry(3, 3, 3);
+
+    var material = new THREE.MeshLambertMaterial({ color: 0xff0000});
+
+    var mesh = new THREE.Mesh(geometry, material);
+
+    this.projectiles[projectile.id] = {
+      id: projectile.id,
+      mesh: mesh
+    };
+
     this.scene.add(mesh);
   },
 
