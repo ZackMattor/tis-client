@@ -22,8 +22,6 @@ export default Ember.Component.extend({
       game_engine.off('state_changed');
     });
 
-    // 3d SETUP STUFF
-    //
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 4000);
@@ -32,11 +30,11 @@ export default Ember.Component.extend({
     this.camera.rotation.y = -1
     this.camera.rotation.z = Math.PI / 2 * 3
 
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.$()[0] });
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.$()[0], antialias:true });
 
-    //this.$().append(this.renderer.domElement);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // Window resize stuff
     var resizeTimer = null;
     Ember.$(window).on('resize', () => {
       clearTimeout(resizeTimer);
@@ -47,7 +45,7 @@ export default Ember.Component.extend({
       }, 250);
     });
 
-    var grid = new THREE.GridHelper(2000, 50, 0x888888, 0x333333);
+    var grid = new THREE.GridHelper(2000, 50, 0xff8d0a, 0x555555);
     grid.position.x = 2000;
     grid.position.y = 2000;
     grid.rotation.x = Math.PI/2;
