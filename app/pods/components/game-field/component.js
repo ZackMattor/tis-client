@@ -26,9 +26,9 @@ export default Ember.Component.extend({
     //
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.x = -5;
-    this.camera.position.z = 4
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 4000);
+    this.camera.position.x = -50;
+    this.camera.position.z = 40
     this.camera.rotation.y = -1
     this.camera.rotation.z = Math.PI / 2 * 3
 
@@ -47,7 +47,7 @@ export default Ember.Component.extend({
       }, 250);
     });
 
-    var grid = new THREE.GridHelper(2000, 500, 0x888888, 0x333333);
+    var grid = new THREE.GridHelper(2000, 50, 0x888888, 0x333333);
     grid.position.x = 2000;
     grid.position.y = 2000;
     grid.rotation.x = Math.PI/2;
@@ -88,7 +88,6 @@ export default Ember.Component.extend({
     game_objects.ships.forEach((ship) => {
       if(!(ship.id in this.ships)) this.addShipObj(ship);
 
-      console.log(ship.health + " | x - " + parseInt(ship.x) + " | y -" + parseInt(ship.y));
       this.ships[ship.id].mesh.position.x = ship.x;
       this.ships[ship.id].mesh.position.y = ship.y;
       this.ships[ship.id].mesh.rotation.z = ship.rotation + Math.PI/2;
@@ -100,7 +99,7 @@ export default Ember.Component.extend({
   addShipObj(ship) {
     console.log('ADDING SHIP');
 
-    var geometry = new THREE.BoxGeometry(2, 2, 0.5);
+    var geometry = new THREE.BoxGeometry(20, 20, 5);
     var material = new THREE.MeshLambertMaterial({ color: 0x00ff00});
 
     var mesh = new THREE.Mesh(geometry, material);
