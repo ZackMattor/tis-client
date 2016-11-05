@@ -1,8 +1,4 @@
 import Ember from 'ember';
-import Camera from 'client/utils/canvas/camera';
-import starFieldGenerator from 'client/utils/canvas/star-field';
-import MiniMap from 'client/utils/canvas/mini-map';
-
 
 export default Ember.Component.extend({
   game_engine: Ember.inject.service(),
@@ -133,26 +129,4 @@ export default Ember.Component.extend({
 
     return spotLight;
   }
-
-  //handleResize() {
-  //  this.set('canvas_width',  Ember.$(window).width());
-  //  this.set('canvas_height', Ember.$(window).height());
-  //  this.setupCanvas();
-  //},
-
-  //setupCanvas() {
-  //  let { canvas_width,
-  //        canvas_height } = this.getProperties('canvas_width', 'canvas_height');
-
-  //  this.$().attr('width', canvas_width);
-  //  this.$().attr('height', canvas_height);
-
-  //  var resizeTimer;
-
-  //  // debounced resize
-  //  Ember.$(window).on('resize', () => {
-  //    clearTimeout(resizeTimer);
-  //    resizeTimer = setTimeout(this.handleResize.bind(this), 250);
-  //  });
-  //},
 });
