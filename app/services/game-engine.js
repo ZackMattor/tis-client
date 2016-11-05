@@ -15,7 +15,7 @@ export default Ember.Service.extend(Ember.Evented, {
 
     let url = ENV.APP.gameServerApiURL + '/session/new';
 
-    $.get(url, data, (data) => {
+    Ember.$.get(url, data, (data) => {
       this.session_id = data.session_id;
       cb();
     });
@@ -33,7 +33,7 @@ export default Ember.Service.extend(Ember.Evented, {
       let data = {
         'type': 'auth',
         'session_id': this.get('session_id')
-      }
+      };
 
       this.get('connection').send(JSON.stringify(data));
 
@@ -49,7 +49,7 @@ export default Ember.Service.extend(Ember.Evented, {
   },
 
   sendKeyboardState() {
-    var keyboard_data = this.get('input_keyboard.keyState')
+    var keyboard_data = this.get('input_keyboard.keyState');
 
     var data = {
       type: 'player-update',

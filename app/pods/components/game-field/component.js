@@ -26,9 +26,9 @@ export default Ember.Component.extend({
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 4000);
     this.camera.position.x = -50;
-    this.camera.position.z = 40
-    this.camera.rotation.y = -1
-    this.camera.rotation.z = Math.PI / 2 * 3
+    this.camera.position.z = 40;
+    this.camera.rotation.y = -1;
+    this.camera.rotation.z = Math.PI / 2 * 3;
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.$()[0], antialias:true });
 
