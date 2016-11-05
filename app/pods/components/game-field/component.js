@@ -11,35 +11,70 @@ export default Ember.Component.extend({
 
   mapSize: [4000, 4000],
 
-  tagName: 'canvas',
+  tagName: 'div',
 
   didInsertElement() {
-    this.setupCanvas();
-    this.setupCtx();
+    //this.setupCanvas();
+    //this.setupCtx();
     this.set('client_id', this.get('game_engine.session_id'));
 
     // Wire up events
     let game_engine = this.get('game_engine');
 
-    game_engine.on('state_changed', this.renderField.bind(this));
+    game_engine.on('state_changed', this.updateEntities.bind(this));
     game_engine.on('disconnected', () => {
       this.sendAction('disconnected');
       game_engine.off('disconnected');
       game_engine.off('state_changed');
     });
 
-    this.miniMap = new MiniMap(this.get('ctx'),
-                               this.get('mapSize')[0],
-                               this.get('mapSize')[1],
-                               50,
-                               50,
-                               0.05);
+    //this.miniMap = new MiniMap(this.get('ctx'),
+    //                           this.get('mapSize')[0],
+    //                           this.get('mapSize')[1],
+    //                           50,
+    //                           50,
+    //                           0.05);
 
-    starFieldGenerator().then((image) => {
-      this.set('star_field', image);
+    //starFieldGenerator().then((image) => {
+    //  this.set('star_field', image);
 
-      game_engine.joinGame();
-    });
+    //  game_engine.joinGame();
+    //});
+
+    // 3d SETUP STUFF
+    //
+    this.scene = new THREE.Scene();
+
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera.position.x = -5;
+    this.camera.position.z = 4
+    this.camera.rotation.y = -1
+    this.camera.rotation.z = Math.PI / 2 * 3
+
+    this.renderer = new THREE.WebGLRenderer();
+
+    this.$().append(this.renderer.domElement);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    var grid = new THREE.GridHelper(3000, 500, 0x888888, 0x333333);
+    grid.rotation.x = Math.PI/2
+    this.scene.add(grid);
+
+    var axes = new THREE.AxisHelper(2);
+    this.scene.add(axes);
+
+    this.ships = {};
+
+    this.light = this.createLight();
+    this.scene.add(this.light);
+
+    this.light = this.createLight();
+    this.scene.add(this.light);
+
+    //this.player = new Player(this.scene, this.camera);
+    //this.tick = 0;
+    this.renderScene();
+    game_engine.joinGame();
   },
 
   willDestroyElement() {
@@ -75,32 +110,65 @@ export default Ember.Component.extend({
     this.set('ctx', ctx);
   },
 
-  // DRAW STUFF
-  renderField() {
+
+  renderScene() {
+    requestAnimationFrame(this.renderScene.bind(this));
+    //this.player.update();
+
+    this.renderer.render(this.scene, this.camera);
+
+    this.tick++;
+  },
+
+  updateEntities() {
     let frame_data = this.get('game_engine.currentState');
-
-    let { ctx,
-          camera  } = this.getProperties('ctx', 'camera');
-
     let game_objects = frame_data.state;
 
-    this.centerCamera(game_objects.ships);
+    game_objects.ships.forEach((ship) => {
+      if(!(ship.id in this.ships)) this.addShipObj(ship);
 
-    camera.begin();
+      console.log(ship.rotation);
+      this.ships[ship.id].mesh.position.x = ship.x;
+      this.ships[ship.id].mesh.position.y = ship.y;
+      this.ships[ship.id].mesh.rotation.z = ship.rotation + Math.PI/2;
+    });
 
-    ctx.clearRect(camera.viewport.left, camera.viewport.top, camera.viewport.width, camera.viewport.height);
 
-    // Field stuff
-    this.drawBackground();
-    this.drawBoundries();
+    // SPAWN SHIP OBJECTS
+    // SPAWN PROJECTILE OBJECTS
+  },
 
-    // Game entities
-    game_objects.projectiles.forEach(this.drawProjectile.bind(this));
-    game_objects.ships.forEach(this.drawShip.bind(this));
+  addShipObj(ship) {
+    console.log('ADDING SHIP');
 
-    camera.end();
+    var geometry = new THREE.BoxGeometry(2, 2, 0.5);
+    var material = new THREE.MeshLambertMaterial({ color: 0x00ff00});
 
-    this.miniMap.render(game_objects, this.get('client_id'));
+    var mesh = new THREE.Mesh(geometry, material);
+
+    this.ships[ship.id] = {
+      id: ship.id,
+      mesh: mesh
+    };
+
+    mesh.add(this.camera);
+    this.scene.add(mesh);
+  },
+
+  createLight() {
+    var spotLight = new THREE.SpotLight( 0xffffff );
+    spotLight.position.set( 0, 0, 5500 );
+
+    spotLight.castShadow = true;
+
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+
+    spotLight.shadow.camera.near = 500;
+    spotLight.shadow.camera.far = 4000;
+    spotLight.shadow.camera.fov = 30;
+
+    return spotLight;
   },
 
   handleResize() {

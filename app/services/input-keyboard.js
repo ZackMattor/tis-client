@@ -3,6 +3,7 @@ import KEY from '../utils/key-mapping';
 
 export default Ember.Service.extend(Ember.Evented, {
   keyState: {},
+  inverted: true,
 
   init() {
     console.log('input-keyboard: Binding to don key events');
@@ -25,6 +26,17 @@ export default Ember.Service.extend(Ember.Evented, {
 
   setKey(key_code, value) {
     var keyState = this.get('keyState');
+
+    if(this.get('inverted')) {
+      switch(key_code) {
+        case KEY['D']:
+          key_code = KEY['A'];
+          break;
+        case KEY['A']:
+          key_code = KEY['D'];
+          break;
+      }
+    }
 
     // If the key state exists, and it has changed
     if(key_code in keyState && keyState[key_code] !== value) {
