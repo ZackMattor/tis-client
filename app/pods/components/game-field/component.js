@@ -56,7 +56,9 @@ export default Ember.Component.extend({
     this.$().append(this.renderer.domElement);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-    var grid = new THREE.GridHelper(3000, 500, 0x888888, 0x333333);
+    var grid = new THREE.GridHelper(2000, 500, 0x888888, 0x333333);
+    grid.position.x = 2000
+    grid.position.y = 2000
     grid.rotation.x = Math.PI/2
     this.scene.add(grid);
 
@@ -127,7 +129,7 @@ export default Ember.Component.extend({
     game_objects.ships.forEach((ship) => {
       if(!(ship.id in this.ships)) this.addShipObj(ship);
 
-      console.log(ship.rotation);
+      console.log(ship.health + " | x - " + parseInt(ship.x) + " | y -" + parseInt(ship.y));
       this.ships[ship.id].mesh.position.x = ship.x;
       this.ships[ship.id].mesh.position.y = ship.y;
       this.ships[ship.id].mesh.rotation.z = ship.rotation + Math.PI/2;

@@ -35,6 +35,12 @@ export default Ember.Service.extend(Ember.Evented, {
         case KEY['A']:
           key_code = KEY['D'];
           break;
+        case KEY['LEFT_ARROW']:
+          key_code = KEY['RIGHT_ARROW'];
+          break;
+        case KEY['RIGHT_ARROW']:
+          key_code = KEY['LEFT_ARROW'];
+          break;
       }
     }
 
