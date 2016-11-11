@@ -1,7 +1,19 @@
-import Ember from 'ember';
-import KEY from '../utils/key-mapping';
+var KEY = {
+  W: 87,
+  A: 65,
+  S: 83,
+  D: 68,
+  R: 82,
 
-export default Ember.Service.extend(Ember.Evented, {
+  LEFT_ARROW: 37,
+  UP_ARROW: 38,
+  RIGHT_ARROW: 39,
+  DOWN_ARROW: 40,
+
+  SPACE: 32
+};
+
+export default {
   keyState: {},
   inverted: true,
 
@@ -9,11 +21,11 @@ export default Ember.Service.extend(Ember.Evented, {
     console.log('input-keyboard: Binding to don key events');
 
     for(var key_name in KEY) {
-      this.set('keyState.' + KEY[key_name], false);
+      this.keyState[KEY[key_name]] = false;
     }
 
-    Ember.$(document).on('keydown', this.onKeyDown.bind(this));
-    Ember.$(document).on('keyup', this.onKeyUp.bind(this));
+    $(document).on('keydown', this.onKeyDown.bind(this));
+    $(document).on('keyup', this.onKeyUp.bind(this));
   },
 
   onKeyDown(evt) {
@@ -25,9 +37,9 @@ export default Ember.Service.extend(Ember.Evented, {
   },
 
   setKey(key_code, value) {
-    var keyState = this.get('keyState');
+    var keyState = this.keyState;
 
-    if(this.get('inverted')) {
+    if(this.inverted) {
       switch(key_code) {
         case KEY['D']:
           key_code = KEY['A'];
@@ -46,9 +58,9 @@ export default Ember.Service.extend(Ember.Evented, {
 
     // If the key state exists, and it has changed
     if(key_code in keyState && keyState[key_code] !== value) {
-      this.set('keyState.' + key_code, value);
+      this.keyState[key_code] = value;
 
-      this.trigger('changed');
+      this.cb_changed(this.keyState);
     }
   }
-});
+};

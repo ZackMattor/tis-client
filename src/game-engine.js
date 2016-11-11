@@ -1,26 +1,30 @@
-import Ember from 'ember';
+import net from './lib/net';
+import keyboard from './lib/keyboard';
 
-export default Ember.Component.extend({
-  game_engine: Ember.inject.service(),
-  canvas_width: Ember.$(window).width(),
-  canvas_height: Ember.$(window).height(),
+export default {
+  canvas_width: $(window).width(),
+  canvas_height: $(window).height(),
 
   mapSize: [4000, 4000],
 
-  tagName: 'canvas',
+  init() {
+    net.auth('foo', this.start.bind(this));
+  },
 
-  didInsertElement() {
-    this.set('client_id', this.get('game_engine.session_id'));
+  start() {
+    keyboard.cb_changed = (state) => {
+      net.sendKeyboardState(state);
+    };
+
+    keyboard.init();
+    this.client_id = net.session_id;
 
     // Wire up events
-    let game_engine = this.get('game_engine');
+    net.cb_state_changed = this.updateEntities.bind(this);
 
-    game_engine.on('state_changed', this.updateEntities.bind(this));
-    game_engine.on('disconnected', () => {
-      this.sendAction('disconnected');
-      game_engine.off('disconnected');
-      game_engine.off('state_changed');
-    });
+    net.cb_disconnected = () => {
+      alert('DISCONNECTED');
+    };
 
     this.scene = new THREE.Scene();
 
@@ -30,13 +34,13 @@ export default Ember.Component.extend({
     this.camera.rotation.y = -1;
     this.camera.rotation.z = Math.PI / 2 * 3;
 
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.$()[0], antialias:true });
+    this.renderer = new THREE.WebGLRenderer({ canvas: $('canvas')[0], antialias:true });
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     // Window resize stuff
     var resizeTimer = null;
-    Ember.$(window).on('resize', () => {
+    $(window).on('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -64,12 +68,12 @@ export default Ember.Component.extend({
     this.scene.add(this.light);
 
     this.renderScene();
-    game_engine.joinGame();
+    net.joinGame();
   },
 
   willDestroyElement() {
-    Ember.$(window).off('resize');
-    this.get('game_engine').leaveGame();
+    $(window).off('resize');
+    net.leaveGame();
   },
 
   renderScene() {
@@ -81,7 +85,7 @@ export default Ember.Component.extend({
   },
 
   updateEntities() {
-    let frame_data = this.get('game_engine.currentState');
+    let frame_data = net.currentState;
     let game_objects = frame_data.state;
 
     game_objects.ships.forEach((ship) => {
@@ -148,4 +152,4 @@ export default Ember.Component.extend({
 
     return spotLight;
   }
-});
+};
