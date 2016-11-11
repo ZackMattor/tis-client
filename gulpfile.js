@@ -1,6 +1,5 @@
 const gulp = require('gulp');
 const babel = require('babel-loader');
-const concat = require('gulp-concat');
 var webpack = require('webpack-stream');
 
 gulp.task('default', () => {
