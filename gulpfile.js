@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const babel = require('babel-loader');
 var webpack = require('webpack-stream');
 var merge = require('merge-stream');
+var watch = require('gulp-watch');
 
 gulp.task('default', () => {
   var javascript =  gulp.src('src/**/*.js')
@@ -25,8 +26,10 @@ gulp.task('default', () => {
     }))
     .pipe(gulp.dest('dist'));
 
-  var html = gulp.src('src/**/*.html')
-    .pipe(gulp.dest('dist'));
+  var html = watch('src/**/*.html', function() {
+    gulp.src('src/**/*.html')
+      .pipe(gulp.dest('dist'));
+  });
 
-  return merge(javascript, html)
+  return merge(javascript, html);
 });
