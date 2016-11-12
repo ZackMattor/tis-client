@@ -18,8 +18,6 @@ export default {
   inverted: true,
 
   init() {
-    console.log('input-keyboard: Binding to don key events');
-
     for(var key_name in KEY) {
       this.keyState[KEY[key_name]] = false;
     }
