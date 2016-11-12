@@ -85,7 +85,7 @@ export default {
   },
 
   updateEntities() {
-    let frame_data = net.currentState;
+    let frame_data = net.current_state;
     let game_objects = frame_data.state;
 
     var ship_ids = Object.keys(this.ships);

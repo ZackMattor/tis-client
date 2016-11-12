@@ -1,5 +1,5 @@
 export default {
-  currentState: null,
+  current_state: null,
 
   session_id: null,
 
@@ -52,7 +52,7 @@ export default {
   },
 
   onMessage(e) {
-    this.currentState = JSON.parse(e.data);
+    this.current_state = JSON.parse(e.data);
 
     this.cb_state_changed();
   }
