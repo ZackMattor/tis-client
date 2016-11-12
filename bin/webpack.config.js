@@ -3,8 +3,6 @@ var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
-  cache: true,
-
   entry: {
     app: ["./src/javascripts/app.js"]
   },

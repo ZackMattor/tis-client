@@ -88,20 +88,34 @@ export default {
     let frame_data = net.currentState;
     let game_objects = frame_data.state;
 
+    var ship_ids = Object.keys(this.ships);
     game_objects.ships.forEach((ship) => {
       if(!(ship.id in this.ships)) this.addShipObj(ship);
 
       this.ships[ship.id].mesh.position.x = ship.x;
       this.ships[ship.id].mesh.position.y = ship.y;
       this.ships[ship.id].mesh.rotation.z = ship.rotation + Math.PI/2;
+
+      ship_ids.splice(ship_ids.indexOf(ship.id), 1)
+    });
+    ship_ids.forEach((id) => {
+      this.scene.remove(this.ships[id].mesh);
+      delete this.ships[id];
     });
 
+    var projectile_ids = Object.keys(this.projectiles);
     game_objects.projectiles.forEach((projectile) => {
       console.log(projectile.id);
       if(!(projectile.id in this.projectiles)) this.addProjectileObj(projectile);
 
       this.projectiles[projectile.id].mesh.position.x = projectile.x;
       this.projectiles[projectile.id].mesh.position.y = projectile.y;
+
+      projectile_ids.splice(projectile_ids.indexOf(projectile.id), 1)
+    });
+    projectile_ids.forEach((id) => {
+      this.scene.remove(this.projectiles[id].mesh);
+      delete this.projectiles[id];
     });
   },
 
@@ -118,7 +132,10 @@ export default {
       mesh: mesh
     };
 
-    mesh.add(this.camera);
+    if(net.session_id == ship.id) {
+      mesh.add(this.camera);
+    }
+
     this.scene.add(mesh);
   },
 
