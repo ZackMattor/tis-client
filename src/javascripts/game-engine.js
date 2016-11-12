@@ -9,7 +9,6 @@ export default Object.assign({}, BaseObject, {
   mapSize: [4000, 4000],
 
   init() {
-    console.log('WHAT');
     net.auth('fooo', this.start.bind(this));
   },
 
