@@ -1,4 +1,6 @@
-export default {
+import BaseObject from './base-object';
+
+export default Object.assign({}, BaseObject, {
   current_state: null,
 
   session_id: null,
@@ -37,7 +39,7 @@ export default {
 
   leaveGame() {
     this.get('connection').close();
-    this.cb_disconnected();
+    this.trigger('disconnect');
   },
 
   sendKeyboardState(keyboard_state) {
@@ -54,6 +56,6 @@ export default {
   onMessage(e) {
     this.current_state = JSON.parse(e.data);
 
-    this.cb_state_changed();
+    this.trigger('state_change');
   }
-};
+});
