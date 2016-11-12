@@ -1,30 +1,26 @@
 import net from './lib/net';
 import keyboard from './lib/keyboard';
+import BaseObject from './lib/base-object';
 
-export default {
+export default Object.assign({}, BaseObject, {
   canvas_width: $(window).width(),
   canvas_height: $(window).height(),
 
   mapSize: [4000, 4000],
 
   init() {
+    console.log('WHAT');
     net.auth('fooo', this.start.bind(this));
   },
 
   start() {
-    keyboard.cb_changed = (state) => {
-      net.sendKeyboardState(state);
-    };
-
     keyboard.init();
     this.client_id = net.session_id;
 
     // Wire up events
-    net.cb_state_changed = this.updateEntities.bind(this);
-
-    net.cb_disconnected = () => {
-      alert('DISCONNECTED');
-    };
+    keyboard.on('changed', (state) => net.sendKeyboardState(state));
+    net.on('state_change', this.updateEntities.bind(this));
+    net.on('disconnect', () => alert('DISCONNECTED'));
 
     this.scene = new THREE.Scene();
 
@@ -169,4 +165,4 @@ export default {
 
     return spotLight;
   }
-};
+});

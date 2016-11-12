@@ -1,3 +1,4 @@
+// TODO - move this stuff
 var KEY = {
   W: 87,
   A: 65,
@@ -13,13 +14,15 @@ var KEY = {
   SPACE: 32
 };
 
-export default {
-  keyState: {},
+import BaseObject from './base-object';
+
+export default Object.assign({}, BaseObject, {
+  key_state: {},
   inverted: true,
 
   init() {
     for(var key_name in KEY) {
-      this.keyState[KEY[key_name]] = false;
+      this.key_state[KEY[key_name]] = false;
     }
 
     $(document).on('keydown', this.onKeyDown.bind(this));
@@ -35,7 +38,7 @@ export default {
   },
 
   setKey(key_code, value) {
-    var keyState = this.keyState;
+    var key_state = this.key_state;
 
     if(this.inverted) {
       switch(key_code) {
@@ -55,10 +58,10 @@ export default {
     }
 
     // If the key state exists, and it has changed
-    if(key_code in keyState && keyState[key_code] !== value) {
-      this.keyState[key_code] = value;
+    if(key_code in key_state && key_state[key_code] !== value) {
+      this.key_state[key_code] = value;
 
-      this.cb_changed(this.keyState);
+      this.trigger('changed', this.key_state);
     }
   }
-};
+});
