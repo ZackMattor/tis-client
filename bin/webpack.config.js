@@ -1,15 +1,21 @@
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require("path");
+var webpack = require("webpack");
 
 module.exports = {
+  name: 'js',
+
   entry: {
-    app: ["./src/index.js"]
+    app: ["./src/javascripts/index.js"]
   },
 
   output: {
     path: '/Users/zmattor/work/arksaw/game/client/dist',
-    publicPath: '/assets/',
     filename: "bundle.js"
+  },
+
+  devServer: {
+    inline: true
   },
 
   module: {
@@ -20,6 +26,10 @@ module.exports = {
         query: {
           presets: ['es2015']
         }
+      },
+      {
+        test: /\.scss$/,
+        loaders: ["style", "css", "sass"]
       }
     ]
   },
@@ -27,6 +37,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       { from: 'src/index.html' }
-    ])
+    ]),
+    new webpack.HotModuleReplacementPlugin()
   ]
 };

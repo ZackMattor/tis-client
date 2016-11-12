@@ -8,7 +8,7 @@ export default {
   mapSize: [4000, 4000],
 
   init() {
-    net.auth('foo', this.start.bind(this));
+    net.auth('fooo', this.start.bind(this));
   },
 
   start() {
