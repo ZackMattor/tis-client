@@ -1,4 +1,6 @@
-export default {
+import BaseObject from './base-object';
+
+export default Object.assign(BaseObject, {
   current_state: null,
 
   session_id: null,
@@ -56,4 +58,4 @@ export default {
 
     this.cb_state_changed();
   }
-};
+});
