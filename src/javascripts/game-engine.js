@@ -1,6 +1,7 @@
 import net from './lib/net';
 import keyboard from './lib/keyboard';
 import BaseObject from './lib/base-object';
+import MeshManager from './lib/mesh-manager';
 
 export default Object.assign({}, BaseObject, {
   canvas_width: $(window).width(),
@@ -9,7 +10,10 @@ export default Object.assign({}, BaseObject, {
   mapSize: [4000, 4000],
 
   init() {
-    net.auth('fooo', this.start.bind(this));
+    this.meshManager = new MeshManager();
+    net.auth('fooo', () => {
+      this.meshManager.load(this.start.bind(this));
+    });
   },
 
   start() {
@@ -100,7 +104,6 @@ export default Object.assign({}, BaseObject, {
 
     var projectile_ids = Object.keys(this.projectiles);
     game_objects.projectiles.forEach((projectile) => {
-      console.log(projectile.id);
       if(!(projectile.id in this.projectiles)) this.addProjectileObj(projectile);
 
       this.projectiles[projectile.id].mesh.position.x = projectile.x;
