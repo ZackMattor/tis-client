@@ -34,7 +34,15 @@ module.exports = {
 
   plugins: [
     new CopyWebpackPlugin([
-      { from: 'src/index.html' }
+      {
+        from: 'src/index.html'
+      },
+
+      {
+        context: 'src/meshes',
+        from: '**/*',
+        to: 'meshes/'
+      }
     ]),
     new webpack.HotModuleReplacementPlugin()
   ]
