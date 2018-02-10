@@ -8,7 +8,7 @@ module.exports = {
   },
 
   output: {
-    path: '/Users/zmattor/work/arksaw/game/client/dist',
+    path: './dist',
     filename: "bundle.js"
   },
 

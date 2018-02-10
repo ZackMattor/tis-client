@@ -1,0 +1,45 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 3
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:9
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            npm install
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      - setup_remote_docker
+      - deploy:
+          name: Build and deploy docker image
+          command: |
+            npm run build
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+            # build docker image
+            docker build -t zackmattor/tis-client:latest .
+            docker tag zackmattor/tis-client:latest zackmattor/tis-client:$CIRCLE_SHA1
+            docker push zackmattor/tis-client:$CIRCLE_SHA1
+            docker push zackmattor/tis-client:latest
