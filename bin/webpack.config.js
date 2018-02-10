@@ -2,7 +2,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require("path");
 var webpack = require("webpack");
 
-console.log("Saving to - " + __dirname + '/dist');
+console.log("Saving to - " + process.cwd() + '/dist');
 
 module.exports = {
   entry: {
@@ -10,7 +10,7 @@ module.exports = {
   },
 
   output: {
-    path: __dirname + '/dist',
+    path: process.cwd() + '/dist',
     filename: "bundle.js"
   },
 
