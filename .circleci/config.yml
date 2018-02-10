@@ -35,6 +35,8 @@ jobs:
       - deploy:
           name: Build and deploy docker image
           command: |
+            export TIS_HTTP_ENDPOINT=https://tis-server.zmattor.me
+            export TIS_WS_ENDPOINT=wss://tis-server.zmattor.me
             npm run build
             docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 

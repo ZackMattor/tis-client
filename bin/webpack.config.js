@@ -8,7 +8,7 @@ module.exports = {
   },
 
   output: {
-    path: './dist',
+    path: __dirname + '/dist',
     filename: "bundle.js"
   },
 
@@ -36,6 +36,13 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: 'src/index.html' }
     ]),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'TIS_HTTP_ENDPOINT': JSON.stringify(process.env.TIS_HTTP_ENDPOINT || "http://localhost:8080"),
+        'TIS_WS_ENDPOINT': JSON.stringify(process.env.TIS_WS_ENDPOINT || "ws://localhost:8080")
+      }
+    })
+
   ]
 };

@@ -10,7 +10,7 @@ export default Object.assign({}, BaseObject, {
       nickname: name
     };
 
-    let url = 'http://localhost:8080' + '/session/new';
+    let url = `${process.env.TIS_HTTP_ENDPOINT}/session/new`;
 
     $.get(url, data, (data) => {
       this.session_id = data.session_id;
@@ -19,7 +19,7 @@ export default Object.assign({}, BaseObject, {
   },
 
   joinGame() {
-    let connection = new WebSocket('ws://localhost:8080');
+    let connection = new WebSocket(process.env.TIS_WS_ENDPOINT);
     this.connection = connection;
 
     connection.onopen = () => {
