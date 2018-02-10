@@ -2,6 +2,8 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require("path");
 var webpack = require("webpack");
 
+console.log("Saving to - " + __dirname + '/dist');
+
 module.exports = {
   entry: {
     app: ["./src/javascripts/app.js"]
