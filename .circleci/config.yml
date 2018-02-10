@@ -28,7 +28,7 @@ jobs:
 
       - save_cache:
           paths:
-            - ./vendor/bundle
+            - ./node_modules
           key: v1-dependencies-{{ checksum "package-lock.json" }}
 
       - setup_remote_docker
