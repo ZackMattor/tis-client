@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "parcel src/index.html",
+    "lint": "eslint src/",
     "build": "parcel build src/index.html"
   },
   "repository": "",
@@ -19,9 +20,15 @@
   "license": "MIT",
   "dependencies": {
     "parcel": "^2.0.1",
-    "semver": "5.7"
+    "semver": "5.7",
+    "three": "^0.134.0"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.0.1"
+    "@parcel/transformer-sass": "^2.0.1",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.1"
   }
 }

@@ -1,4 +1,4 @@
-import GameEngine from './game-engine';
+import GameEngine from './game-engine'
 
-window.GameEngine = GameEngine;
-GameEngine.init();
+window.GameEngine = GameEngine
+GameEngine.init()

@@ -1,33 +1,33 @@
 export default {
   events: {},
 
-  on(event_name, callback) {
-    if(!this._populated(event_name)) this.events[event_name] = [];
+  on (eventName, callback) {
+    if (!this._populated(eventName)) this.events[eventName] = []
 
-    this.events[event_name].push(callback);
+    this.events[eventName].push(callback)
   },
 
-  off(event_name, callback) {
-    if(!this._populated(event_name)) return;
+  off (eventName, callback) {
+    if (!this._populated(eventName)) return
 
-    if(callback) {
-      var index = this.events[event_name].indexOf(callback);
+    if (callback) {
+      const index = this.events[eventName].indexOf(callback)
 
-      this.events[event_name].splice(index, 1);
+      this.events[eventName].splice(index, 1)
     } else {
-      this.events[event_name] = [];
+      this.events[eventName] = []
     }
   },
 
-  trigger(event_name, data) {
-    if(!this._populated(event_name)) return;
+  trigger (eventName, data) {
+    if (!this._populated(eventName)) return
 
-    this.events[event_name].forEach((callback) => {
-      callback(data);
-    });
+    this.events[eventName].forEach((callback) => {
+      callback(data)
+    })
   },
 
-  _populated(event_name) {
-    return Array.isArray(this.events[event_name]);
+  _populated (eventName) {
+    return Array.isArray(this.events[eventName])
   }
-};
+}
