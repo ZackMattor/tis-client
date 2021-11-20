@@ -1,8 +1,10 @@
 .swp
 .DS_Store
+
 # compiled output
 /dist
 /tmp
+.parcel-cache
 
 # dependencies
 /node_modules
