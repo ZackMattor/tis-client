@@ -8,8 +8,8 @@
     "test": "tests"
   },
   "scripts": {
-    "dev": "node bin/dev-environment.js",
-    "build": "node bin/build.js"
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
   },
   "repository": "",
   "engines": {
@@ -18,7 +18,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "parcel": "^2.0.1"
+    "parcel": "^2.0.1",
+    "semver": "5.7"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.0.1"
