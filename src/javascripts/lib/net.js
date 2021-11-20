@@ -1,5 +1,9 @@
 import BaseObject from './base-object';
 
+const isHttps = window.location.protocol === 'https:';
+const WS_ENDPOINT  = isHttps ? `wss://${window.location.hostname}` : `ws://${window.location.hostname}:8080`;
+const API_ENDPOINT = isHttps ? `https://${window.location.hostname}` : `http://${window.location.hostname}:8080`;
+
 export default Object.assign({}, BaseObject, {
   current_state: null,
 
@@ -10,7 +14,7 @@ export default Object.assign({}, BaseObject, {
       nickname: name
     };
 
-    let url = `${window.location.protocol}//${window.location.hostname}:8080/session/new`;
+    let url = `${API_ENDPOINT}/api/session/new`;
 
     $.get(url, data, (data) => {
       this.session_id = data.session_id;
@@ -19,7 +23,7 @@ export default Object.assign({}, BaseObject, {
   },
 
   joinGame() {
-    let connection = new WebSocket(`${window.location.protocol == 'https' ? 'wss' : 'ws'}://${window.location.hostname}:8080`);
+    let connection = new WebSocket(WS_ENDPOINT + '/player');
     this.connection = connection;
 
     connection.onopen = () => {
