@@ -10,7 +10,7 @@ export default Object.assign({}, BaseObject, {
       nickname: name
     };
 
-    let url = `${process.env.TIS_HTTP_ENDPOINT}/session/new`;
+    let url = `${window.location.protocol}//${window.location.hostname}:8080/session/new`;
 
     $.get(url, data, (data) => {
       this.session_id = data.session_id;
@@ -19,7 +19,7 @@ export default Object.assign({}, BaseObject, {
   },
 
   joinGame() {
-    let connection = new WebSocket(process.env.TIS_WS_ENDPOINT);
+    let connection = new WebSocket(`${window.location.protocol == 'https' ? 'wss' : 'ws'}://${window.location.hostname}:8080`);
     this.connection = connection;
 
     connection.onopen = () => {
