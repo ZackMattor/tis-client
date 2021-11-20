@@ -1,7 +1,8 @@
 import BaseObject from './base-object';
 
-const WS_ENDPOINT  = window.location.protocol == 'https' ? `wss://${window.location.hostname}/ws` : `ws://${window.location.hostname}:8080`;
-const API_ENDPOINT = window.location.protocol == 'https' ? `https://${window.location.hostname}/api` : `http://${window.location.hostname}:8080`;
+const isHttps = window.location.protocol === 'https:';
+const WS_ENDPOINT  = isHttps ? `wss://${window.location.hostname}/ws` : `ws://${window.location.hostname}:8080`;
+const API_ENDPOINT = isHttps ? `https://${window.location.hostname}/api` : `http://${window.location.hostname}:8080`;
 
 export default Object.assign({}, BaseObject, {
   current_state: null,
