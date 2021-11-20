@@ -1,18 +1,16 @@
 # GameClient
 
-Javascript client for the game. The game is a 3d multiplayer space shooter.
+Javascript client for the Triangles In Space game. The game is a 3d multiplayer space shooter.
 
 # Get Started
  - `git clone git@github.com:ZackMattor/tis-client.git`
  - `npm install`
  - `npm run dev`
- - open up your browser to http://localhost:4200
 
 # Stack
- - ThreeJS
  - Node
- - NPM
- 
+ - ThreeJS
+ - ParcelJS
  
 
 # TODO
