@@ -19,7 +19,8 @@ export default Object.assign({}, BaseObject, {
   },
 
   joinGame() {
-    let connection = new WebSocket(`${window.location.protocol == 'https' ? 'wss' : 'ws'}://${window.location.hostname}:8080`);
+    const url = window.location.protocol == 'https' ? `wss://${window.location.hostname}/ws` : `ws://${window.location.hostname}:8080`;
+    let connection = new WebSocket(url);
     this.connection = connection;
 
     connection.onopen = () => {
